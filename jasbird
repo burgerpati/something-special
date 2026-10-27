@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="start.css">
+    <title>Pomo Chrono !</title>
+  </head>
+  <body>
+    <div class="mainDiv">
+      <h1>MUSIC PLAYER >.< </h1>
+      <p>Listen and Relax !</p>
+      <img src="https://github.com/burgerpati/playlist/blob/main/musicplayer.png?raw=true" alt="Music player" />
+      <button id="start-btn">START</button>
+    </div>
+
+    <script>
+document.getElementById("start-btn").addEventListener("click", () => {
+  window.location.href = "cupid_playlist.html";
+});
+</script>
+  </body>
+</html>
