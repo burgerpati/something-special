@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Cupid's Playlist ♥</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:#1a0010;min-height:100%;font-family:'Press Start 2P',monospace;}
+
+#s-player{display:flex;flex-direction:column;align-items:center;background:#1a0010;min-height:100vh;min-height:100dvh;position:relative;overflow-x:hidden;}
+#s-player::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(255,120,170,0.04) 0,rgba(255,120,170,0.04) 1px,transparent 1px,transparent 4px);pointer-events:none;z-index:0;}
+
+#player-hero{width:100%;background:#e879a0;padding:16px 14px;text-align:center;z-index:2;}
+#hero-title{font-size:clamp(11px,3vw,15px);color:#fff;margin-bottom:8px;line-height:1.5;}
+#hero-sub{font-size:clamp(7px,1.8vw,9px);color:#fce7f3;margin-bottom:7px;}
+#hero-congrats{font-size:clamp(6px,1.5vw,7px);color:#fff0f6;}
+
+#player-body{width:100%;max-width:520px;z-index:2;padding:0 0 28px;}
+#album-section{display:flex;align-items:center;gap:14px;padding:16px 16px 0;}
+#album-art{width:clamp(90px,22vw,120px);height:clamp(90px,22vw,120px);background:#2d0020;border:3px solid #e879a0;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+#album-art img{width:100%;height:100%;object-fit:cover;display:none;}
+#album-fb{font-size:34px;color:#e879a0;}
+#song-meta{flex:1;min-width:0;}
+#song-title{font-size:clamp(9px,2.4vw,12px);color:#fde68a;margin-bottom:10px;line-height:1.5;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+#song-artist{font-size:clamp(7px,1.8vw,9px);color:#f9a8d4;margin-bottom:11px;}
+#now-playing-tag{font-size:clamp(6px,1.4vw,7px);color:#e879a0;background:#2d0020;border:2px solid #e879a0;padding:4px 7px;display:inline-block;}
+
+#audio-viz{margin:14px 16px 0;display:flex;align-items:flex-end;gap:2px;height:44px;}
+.avbar{flex:1;background:#e879a0;min-height:2px;opacity:0.7;}
+
+#progress-section{padding:12px 16px 0;}
+#prog-bar{height:6px;background:#3d0030;cursor:pointer;position:relative;margin-bottom:8px;}
+#prog-fill{height:6px;background:#e879a0;width:0%;pointer-events:none;}
+#prog-handle{position:absolute;top:-4px;width:14px;height:14px;background:#fde68a;border:2px solid #e879a0;border-radius:50%;transform:translateX(-7px);pointer-events:none;}
+#time-row{display:flex;justify-content:space-between;font-size:clamp(7px,1.8vw,9px);color:#f9a8d4;}
+
+#controls-section{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px 0;}
+.ctrl{font-family:'Press Start 2P',monospace;background:#120008;color:#f9a8d4;border:2px solid #831843;cursor:pointer;padding:8px 11px;font-size:12px;line-height:1;}
+.ctrl:hover{background:#2d0020;color:#fde68a;border-color:#e879a0;}
+#play-btn{font-size:17px;padding:10px 15px;border-color:#e879a0;color:#fde68a;}
+.ctrl.active{border-color:#fde68a;color:#fde68a;}
+
+#vol-section{display:flex;align-items:center;gap:10px;padding:12px 16px 0;}
+#vol-icon{font-size:11px;color:#f9a8d4;}
+#vol-slider{flex:1;height:4px;accent-color:#e879a0;cursor:pointer;}
+#vol-val{font-size:7px;color:#f9a8d4;min-width:28px;text-align:right;}
+
+#tracklist-section{margin:14px 16px 0;border:2px solid #2d0020;}
+#tl-header{background:#2d0020;padding:8px 11px;font-size:clamp(7px,1.8vw,9px);color:#f9a8d4;}
+#tl{max-height:clamp(180px,32vh,280px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:#831843 #1a0010;}
+.ti{display:flex;align-items:center;gap:9px;padding:9px 11px;cursor:pointer;border-bottom:1px solid #1e0015;font-size:clamp(7px,1.8vw,9px);}
+.ti:hover{background:#200015;}.ti.active{background:#3d0030;}
+.tn{color:#a8366a;min-width:18px;}
+.tt{color:#fbcfe8;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tar{color:#f9a8d4;white-space:nowrap;max-width:38%;overflow:hidden;text-overflow:ellipsis;}
+.ti.active .tt{color:#fde68a;}
+
+#spotify-section{padding:14px 16px 0;}
+#sp-btn{display:block;width:100%;font-family:'Press Start 2P',monospace;font-size:clamp(7px,1.8vw,9px);background:#1DB954;color:#fff;border:none;padding:12px;cursor:pointer;text-decoration:none;text-align:center;}
+#sp-btn:hover{background:#1ed760;}
+</style>
+</head>
+<body>
+
+<div id="s-player">
+  <div id="player-hero">
+    <div id="hero-title">♥ CUPID'S PLAYLIST ♥</div>
+    <div id="hero-sub">my dearest, jasmine · by bien</div>
+    <div id="hero-congrats">YOU SURVIVED THE MAZE OF LOVE!</div>
+  </div>
+  <div id="player-body">
+    <div id="album-section">
+      <div id="album-art"><img id="aimg" src="" alt=""/><div id="album-fb">♥</div></div>
+      <div id="song-meta">
+        <div id="song-title">Kingston</div>
+        <div id="song-artist">Faye Webster</div>
+        <div id="now-playing-tag">♪ NOW PLAYING</div>
+      </div>
+    </div>
+    <div id="audio-viz"></div>
+    <div id="progress-section">
+      <div id="prog-bar" onclick="seekTrack(event)"><div id="prog-fill"></div><div id="prog-handle" style="left:0%"></div></div>
+      <div id="time-row"><span id="tc">0:00</span><span id="td">3:13</span></div>
+    </div>
+    <div id="controls-section">
+      <button class="ctrl" id="shuffle-btn" onclick="toggleShuffle()">⇄</button>
+      <button class="ctrl" onclick="prevTrack()">⏮</button>
+      <button class="ctrl" id="play-btn" onclick="togglePlay()">▶</button>
+      <button class="ctrl" onclick="nextTrack()">⏭</button>
+      <button class="ctrl" id="repeat-btn" onclick="toggleRepeat()">↺</button>
+    </div>
+    <div id="vol-section">
+      <span id="vol-icon">♪</span>
+      <input type="range" id="vol-slider" min="0" max="100" value="80" oninput="setVol(this.value)"/>
+      <span id="vol-val">80</span>
+    </div>
+    <div id="tracklist-section">
+      <div id="tl-header">♥ TRACKLIST — 23 SONGS</div>
+      <div id="tl"></div>
+    </div>
+    <div id="spotify-section">
+      <a id="sp-btn" href="https://open.spotify.com/playlist/7KGLOl9cUGlaDKArLAe65Z" target="_blank">▶ OPEN IN SPOTIFY</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const TRACKS=[
+  {t:"Kingston",a:"Faye Webster",i:"ab67616d00004851ac4ebd092fa2cf210e4c8023",dur:193},
+  {t:"Neu Roses",a:"Daniel Caesar",i:"ab67616d000048517aa8783ad8def37cc548a9cf",dur:214},
+  {t:"All I Really Want Is You",a:"The Mar\u00edas",i:"ab67616d00004851657d6776f64aa731c8d1748b",dur:228},
+  {t:"The Most Beautiful Thing",a:"Bruno Major",i:"ab67616d0000485195998c6ca2c759356eee3c3b",dur:243},
+  {t:"Nobody New",a:"The Mar\u00edas",i:"ab67616d00004851a66ab2cbaebcc84ddd45a078",dur:208},
+  {t:"My Love Mine All Mine",a:"Mitski",i:"ab67616d000048514e549e50bad2fe59df943c97",dur:177},
+  {t:"I Don't Wanna Be Okay",a:"Charlie Burg",i:"ab67616d00004851c699d66824a938624c44c2b7",dur:196},
+  {t:"In A Good Way",a:"Faye Webster",i:"ab67616d000048513528b18d761e6c3d6dfd55d6",dur:222},
+  {t:"Who are you?",a:"Saga Faye",i:"ab67616d000048513484239e39cde74c74d69888",dur:184},
+  {t:"still love you",a:"The Two Lips",i:"ab67616d0000485164d1be1a04b30d4251c8dbfb",dur:189},
+  {t:"Nothin' Without You",a:"Hangsung",i:"ab67616d00004851f9d4e66989bed6fba67cbec2",dur:201},
+  {t:"wave",a:"wave to earth",i:"ab67616d000048513484239e39cde74c74d69888",dur:218},
+  {t:"bird",a:"wave to earth",i:"ab67616d00004851ee461c1dff39922128089519",dur:197},
+  {t:"(Only) About Love",a:"grentperez",i:"ab67616d00004851deb94b2957cbe7429a23f85c",dur:211},
+  {t:"Loose",a:"Daniel Caesar",i:"ab67616d000048517aa8783ad8def37cc548a9cf",dur:235},
+  {t:"Nobody Else",a:"Midday Wednesday",i:"ab67616d00004851b5bed89c545f17bf4732ceef",dur:206},
+  {t:"BEAUTiFUL",a:"Paul Partohap",i:"ab67616d00004851b0405be46c5cae86051ce4e5",dur:224},
+  {t:"Silver Lining",a:"grentperez",i:"ab67616d000048514061f6965ab6f93fb0740b16",dur:199},
+  {t:"Still",a:"Jeff Bernat",i:"ab67616d0000485149bfa64a9446e5af24df08f7",dur:231},
+  {t:"Aura",a:"IV OF SPADES",i:"ab67616d00004851294985e6269d78f98b1dada1",dur:245},
+  {t:"Afford You",a:"Amaria",i:"ab67616d00004851d3cc0334c56c812542fa188c",dur:187},
+  {t:"Everything I Know About Love",a:"Laufey",i:"ab67616d0000485148341e864d4b4881f56f01b4",dur:216},
+  {t:"ONLY",a:"LEEHI",i:"ab67616d00004851d5d11b6ac4242aaa41c8be69",dur:203},
+];
+
+let curTrack=0,isPlaying=false,progTimer=null,elapsed=0,shuffle=false,repeat=false,pVizRaf=null;
+
+function fmtTime(s){const m=Math.floor(s/60),sec=s%60;return m+':'+(sec<10?'0':'')+sec;}
+
+function buildTL(){
+  const tl=document.getElementById('tl');tl.innerHTML='';
+  TRACKS.forEach((t,i)=>{const d=document.createElement('div');d.className='ti'+(i===0?' active':'');d.innerHTML='<span class="tn">'+(i+1)+'</span><span class="tt">'+t.t+'</span><span class="tar">'+t.a+'</span>';d.onclick=()=>{loadTrack(i);startPlay();};tl.appendChild(d);});
+}
+function loadTrack(i){
+  curTrack=i;elapsed=0;isPlaying=false;clearInterval(progTimer);
+  const t=TRACKS[i];
+  document.getElementById('song-title').textContent=t.t;document.getElementById('song-artist').textContent=t.a;
+  document.getElementById('play-btn').textContent='\u25B6';document.getElementById('prog-fill').style.width='0%';document.getElementById('prog-handle').style.left='0%';
+  document.getElementById('tc').textContent='0:00';document.getElementById('td').textContent=fmtTime(t.dur);
+  const img=document.getElementById('aimg'),fb=document.getElementById('album-fb');
+  img.style.display='none';fb.style.display='block';
+  img.onload=()=>{img.style.display='block';fb.style.display='none';};
+  img.onerror=()=>{img.style.display='none';fb.style.display='block';};
+  img.src='https://i.scdn.co/image/'+t.i;
+  document.querySelectorAll('.ti').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+  const ac=document.querySelector('.ti.active');if(ac)ac.scrollIntoView({block:'nearest'});
+}
+function startPlay(){
+  if(isPlaying)return;isPlaying=true;document.getElementById('play-btn').textContent='\u23F8';
+  const dur=TRACKS[curTrack].dur;
+  progTimer=setInterval(()=>{
+    elapsed++;const pct=Math.min((elapsed/dur)*100,100);
+    document.getElementById('prog-fill').style.width=pct+'%';document.getElementById('prog-handle').style.left=pct+'%';
+    document.getElementById('tc').textContent=fmtTime(elapsed);
+    if(elapsed>=dur){clearInterval(progTimer);onEnd();}
+  },1000);
+}
+function pausePlay(){isPlaying=false;document.getElementById('play-btn').textContent='\u25B6';clearInterval(progTimer);}
+function togglePlay(){if(isPlaying)pausePlay();else startPlay();}
+function onEnd(){if(repeat){isPlaying=false;elapsed=0;startPlay();return;}nextTrack();}
+function nextTrack(){const n=shuffle?Math.floor(Math.random()*TRACKS.length):(curTrack+1)%TRACKS.length;loadTrack(n);startPlay();}
+function prevTrack(){if(elapsed>3){elapsed=0;return;}loadTrack((curTrack-1+TRACKS.length)%TRACKS.length);startPlay();}
+function toggleShuffle(){shuffle=!shuffle;document.getElementById('shuffle-btn').classList.toggle('active',shuffle);}
+function toggleRepeat(){repeat=!repeat;document.getElementById('repeat-btn').classList.toggle('active',repeat);}
+function setVol(v){document.getElementById('vol-val').textContent=v;}
+function seekTrack(e){
+  const bar=document.getElementById('prog-bar'),pct=Math.max(0,Math.min(1,e.offsetX/bar.offsetWidth));
+  elapsed=Math.floor(pct*TRACKS[curTrack].dur);
+  document.getElementById('prog-fill').style.width=(pct*100)+'%';document.getElementById('prog-handle').style.left=(pct*100)+'%';
+  document.getElementById('tc').textContent=fmtTime(elapsed);
+}
+function buildPViz(){
+  const viz=document.getElementById('audio-viz');viz.innerHTML='';const bars=[];
+  for(let i=0;i<28;i++){const b=document.createElement('div');b.className='avbar';b.style.height='2px';viz.appendChild(b);bars.push(b);}
+  (function anim(){
+    const t=Date.now()*.003,max=viz.clientHeight||40;
+    bars.forEach((b,i)=>{const h=isPlaying?(Math.abs(Math.sin(t*1.8+i*.5))*.7+Math.abs(Math.cos(t*2.3+i*.9))*.3)*max:2;b.style.height=Math.max(2,Math.round(h))+'px';b.style.opacity=isPlaying?(.5+Math.abs(Math.sin(t+i*.4))*.5).toFixed(2):'0.3';});
+    pVizRaf=requestAnimationFrame(anim);
+  })();
+}
+
+buildTL();
+loadTrack(0);
+buildPViz();
+</script>
+</body>
+</html>
